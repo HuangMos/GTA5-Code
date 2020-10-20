@@ -1,3 +1,42 @@
+流星雨
+
+bool AsteroidShowerToggle = false; int myTimer = 0;
+void AsteroidShower()
+{
+	if (AsteroidShowerToggle)
+	{
+		Hash ast = GAMEPLAY::GET_HASH_KEY("prop_asteroid_01");
+		GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Thunder");
+		Vector3 kek = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), true);
+		if ((timeGetTime() - myTimer) > 600) // myTimer >> in main >> "myTimer = timeGetTime();" you can also set the delay faster or slower as 600
+		{
+			if (STREAMING::IS_MODEL_VALID(ast))
+			{
+				STREAMING::REQUEST_MODEL(ast);
+				while (!STREAMING::HAS_MODEL_LOADED(ast)) WAIT(0);
+				float ang = GAMEPLAY::GET_RANDOM_FLOAT_IN_RANGE(0.0f, 20.0f) * 3.14159265359f;
+				float rad = GAMEPLAY::GET_RANDOM_FLOAT_IN_RANGE(0.0f, 20.0f) * 15.0f;
+				float x = kek.x + rad * cos(ang);
+				float y = kek.y + rad * sin(ang);
+				Object Asteroid = OBJECT::CREATE_OBJECT(ast, x, y, 200.0f, 1, 1, 1);
+				ENTITY::SET_ENTITY_COLLISION(Asteroid, 1, 1);
+				ENTITY::APPLY_FORCE_TO_ENTITY(Asteroid, 1, 150.0f, 180.0f, 200.0f, 20.0f, 20.0f, 50.0f, 0, 0, 1, 1, 0, 1);
+				myTimer = timeGetTime();
+			}
+			STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(ast);
+		}
+	}
+	else
+	{
+		GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("CLEAR");
+	}
+}
+
+
+
+
+
+
 一些可拾取哈希
 
 PICKUP_MONEY_CASE = -831529621
